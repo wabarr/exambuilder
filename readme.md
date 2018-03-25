@@ -38,5 +38,7 @@ The `make_multiple_versions()` has a positional argument which provides the base
 
 The value for the `n` argument determines how many versions will be created.  All versions and grading keys are saved in `dir`
 
+### Styles
 
+If a file named `reference.docx` exists in `dir` then the styles in this document will be applied to the output files.  Read more on the `pandoc` documentation for details on how this works. 
 
