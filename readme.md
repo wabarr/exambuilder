@@ -16,7 +16,7 @@ There is an example project in the `example/` folder in this repo. Below is a pa
     test = Exam(dir = "/Path/To/exambuilder/example/", examYAML = "Exam.yaml")
     test.make_multiple_versions("BaseFilenameForVersions", n=4)
 
-The `dir` argument provides a directory where all the associated exam files will be placed. If this directory doesn't exist you will get an error. 
+The `dir` argument expects a full file path (no relative paths) where all the associated exam files will be placed. If this directory doesn't exist you will get an error. 
 
 The `examYAML` argument points to the YAML file containing the exam questions. This file must be located within `dir`. Here is a minimal example of a YAML file containing exam questions:
 
