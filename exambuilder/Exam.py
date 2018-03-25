@@ -21,11 +21,12 @@ class Exam:
         for versionID in string.ascii_uppercase[0:n]:
             self.make_exam(outfilename=baseOutFileName + "_VERSION_" + versionID + ".docx", makeGradingKey=True, shuffle=True, version=versionID)
 
-    def make_exam(self, outfilename, version, makeGradingKey=True, shuffle=True):
+    def make_exam(self, outfilename, version="A", makeGradingKey=True, shuffle=True):
         ## outfile is the name of the resulting exam document
         ## shuffle indicates whether or not questions should be shuffled
         ## key indicates whether or not this is an instructors key or not
         ## version is a letter indicating the exam version
+
 
         questions = self.parsed_exam["questions"]
 
@@ -75,11 +76,15 @@ class Exam:
 
             args=["pandoc",
                   "-s",
-                  "--reference-docx",
-                  os.path.join(self.dir, "reference.docx"),
                   "-o",
-                  os.path.join(self.dir,  outfilename_possibly_with_KEY),
-                  os.path.join(self.dir, "temp.md")]
+                  os.path.join(self.dir,  outfilename_possibly_with_KEY)]
+
+            fullRefPath = os.path.join(self.dir, "reference.docx")
+            if os.path.isfile(fullRefPath):
+                args.append("--reference-docx")
+                args.append(fullRefPath)
+
+            args.append(os.path.join(self.dir, "temp.md"))
             try:
                 subprocess.check_call(args)
                 os.remove(os.path.join(self.dir, "temp.md"))
