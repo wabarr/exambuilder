@@ -10,8 +10,10 @@ Simple python class that parses a YAML config file containing multiple choice or
 
 ### Usage
 
+There is an example project in the `example/` folder in this repo. Below is a partial example. 
+
     from exambuilder.Exam import Exam
-    test = Exam(dir ="~/ExamDirectory", examYAML = "Exam.yaml")
+    test = Exam(dir = "/Path/To/exambuilder/example/", examYAML = "Exam.yaml")
     test.make_multiple_versions("BaseFilenameForVersions", n=4)
 
 The `dir` argument provides a directory where all the associated exam files will be placed. If this directory doesn't exist you will get an error. 
@@ -31,7 +33,7 @@ The `examYAML` argument points to the YAML file containing the exam questions. T
               - Still don't have it, amigo!
               - You got it!**
 
-The `make_multiple_versions()` has a positional argument which provides the base filename for all versions that will be produced. 
+The `make_multiple_versions()` method has a positional argument which provides the base filename for all versions that will be produced. 
 
 The value for the `n` argument determines how many versions will be created.  All versions and grading keys are saved in `dir`
 
