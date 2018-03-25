@@ -2,7 +2,7 @@
 
 Simple python class for making multiple versions of `.docx` exam files with randomized question order.
 
-Questions bank is written in YAML config file containing multiple choice or fill-in exam quesions.
+Question bank is written in YAML file containing multiple choice or fill-in exam questions, plus the exam title and instructions.
 
 ### Dependencies
 
