@@ -16,7 +16,7 @@ Simple python class that parses a YAML config file containing multiple choice or
 
 The `dir` argument provides a directory where all the associated exam files will be placed. If this directory doesn't exist you will get an error. 
 
-The `examYAML` argument points to the YAML file containing the exam questions. Here is a minimal example:
+The `examYAML` argument points to the YAML file containing the exam questions. This file must be located within `dir`. Here is a minimal example of a YAML file containing exam questions:
 
      title: Title For Exam
      instructions: "These instructions apppear below the title, and **can contain markdown formatting**"
