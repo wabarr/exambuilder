@@ -2,10 +2,6 @@
 
 Simple python class that parses a YAML config file containing multiple choice or fill-in exam quesions and produces multiple versions of `.docx` exam files with randomized question order.
 
-### Features
-
-* basic support for associated question images
-
 ### Dependencies
 
 *   Python 3.6 
@@ -28,6 +24,7 @@ The `examYAML` argument points to the YAML file containing the exam questions. H
          - question: This is a fill in the blank question.  You don't need to provide a block of possible answers
            fill_in: True
          - question: This is a multiple choice question.  There is a block of answers.  The correct answer has two asterisks \*\* at the end to mark it as the correct one. 
+           image: imagefile.jpg
            answers:
               - Wrong answer, buddy!
               - Keep trying, friend!
@@ -41,4 +38,8 @@ The value for the `n` argument determines how many versions will be created.  Al
 ### Styles
 
 If a file named `reference.docx` exists in `dir` then the styles in this document will be applied to the output files.  Read more on the `pandoc` documentation for details on how this works. 
+
+### Images
+
+There is rudimentary support for images. Just include a relative file path in the `image` block in your YAML file for the question you want to provide an image for.  This file is expected to be found in an `images/` subdirectory of `dir`, and will produce an error if not found. The image will be included before the associated question in the resulting document. 
 
