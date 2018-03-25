@@ -1,4 +1,4 @@
-## exambuilder
+## exambuilder - a `pandoc` bases solution for creating multiple exam versions
 
 Simple python class that parses a YAML config file containing multiple choice or fill-in exam quesions and produces multiple versions of `.docx` exam files with randomized question order.
 
