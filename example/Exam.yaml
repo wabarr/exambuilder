@@ -1,0 +1,11 @@
+title: Title For Exam
+instructions: "These instructions apppear below the title, and **can contain markdown formatting**"
+questions:
+    - question: This is a fill in the blank question.  You don't need to provide a block of possible answers
+      fill_in: True
+    - question: This is a multiple choice question.  There is a block of answers.  The correct answer has two asterisks \*\* at the end to mark it as the correct one. 
+      answers:
+         - Wrong answer, buddy!
+         - Keep trying, friend!
+         - Still don't have it, amigo!
+         - You got it!**
