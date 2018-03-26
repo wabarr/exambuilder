@@ -4,4 +4,4 @@ from exambuilder.Exam import Exam
 
 test = Exam(dir = "/Path/To/exambuilder/example/", examYAML = "Exam.yaml")
 
-test.make_multiple_versions("BaseFilenameForVersions", n=4)
+test.make_versions("BaseFilenameForVersions", n=2, shuffle_answers=False)

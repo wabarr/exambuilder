@@ -12,7 +12,7 @@ Simple python class that parses a YAML config file containing multiple choice or
 
     from exambuilder.Exam import Exam
     test = Exam(dir ="~/ExamDirectory", examYAML = "Exam.yaml")
-    test.make_multiple_versions("BaseFilenameForVersions", n=4)
+    test.make_versions("BaseFilenameForVersions", n=4)
 
 The `dir` argument provides a directory where all the associated exam files will be placed. If this directory doesn't exist you will get an error. 
 

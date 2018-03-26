@@ -9,3 +9,9 @@ questions:
          - Keep trying, friend!
          - Still don't have it, amigo!
          - You got it!**
+    - question: Here is another multiple choice question with another block of answers!
+      answers:
+         - Wrong answer, buddy!
+         - Keep trying, friend!
+         - Still don't have it, amigo!
+         - You got it!**

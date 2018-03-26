@@ -16,12 +16,21 @@ class Exam:
             testfile.close()
             self.dir = dir
 
-    def make_multiple_versions(self, baseOutFileName, n=4):
+    def make_versions(self, baseOutFileName, n=4, version=None, shuffle_questions=True, shuffle_answers=True):
         ## baseOutFileName should not include the file extension
-        for versionID in string.ascii_uppercase[0:n]:
-            self.make_exam(outfilename=baseOutFileName + "_VERSION_" + versionID + ".docx", makeGradingKey=True, shuffle=True, version=versionID)
+        ## version is the version identifier. If None, it will use capital letters to identify versions
 
-    def make_exam(self, outfilename, version="A", makeGradingKey=True, shuffle=True):
+        if n > 1 and version is not None:
+            raise Exception("Supplying a custom version identifier only works when making a single exam version. ")
+
+        for versionID in string.ascii_uppercase[0:n]:
+            if version is None:
+                pass
+            else:
+                versionID = version
+            self.make_exam(outfilename=baseOutFileName + "_VERSION_" + versionID + ".docx", makeGradingKey=True, shuffle_questions=shuffle_questions, shuffle_answers=shuffle_answers, version=versionID)
+
+    def make_exam(self, outfilename, version="A", makeGradingKey=True, shuffle_questions=True, shuffle_answers=True,):
         ## outfile is the name of the resulting exam document
         ## shuffle indicates whether or not questions should be shuffled
         ## key indicates whether or not this is an instructors key or not
@@ -30,10 +39,8 @@ class Exam:
 
         questions = self.parsed_exam["questions"]
 
-        if shuffle == True:
+        if shuffle_questions == True:
             random.shuffle(questions)
-            #for question in questions:
-            #    random.shuffle(question)
 
         def writeExamOrKey(isKey, outfilename_possibly_with_KEY, dir):
             #writes either an exam or a key depending on the argument
@@ -68,7 +75,8 @@ class Exam:
                                 answers.append("**" + str(answer).replace("**","") + "**")
                             else:
                                 answers.append(str(answer).replace("**",""))
-
+                        if shuffle_answers:
+                            random.shuffle(answers)
                         for answer in enumerate(answers):
                             tempfile.write("    "  + string.ascii_uppercase[answer[0]] + ".  " + str(answer[1]) + "\n")
                         tempfile.write("\n\n")
