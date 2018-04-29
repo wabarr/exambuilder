@@ -28,7 +28,8 @@ class Exam:
                 pass
             else:
                 versionID = version
-            self.make_exam(outfilename=baseOutFileName + "_VERSION_" + versionID + ".docx", makeGradingKey=True, shuffle_questions=shuffle_questions, shuffle_answers=shuffle_answers, version=versionID)
+            file = baseOutFileName + "_VERSION_" + versionID + ".docx"
+            self.make_exam(outfilename=file, makeGradingKey=True, shuffle_questions=shuffle_questions, shuffle_answers=shuffle_answers, version=versionID)
 
     def make_exam(self, outfilename, version="A", makeGradingKey=True, shuffle_questions=True, shuffle_answers=True,):
         ## outfile is the name of the resulting exam document
@@ -62,7 +63,12 @@ class Exam:
                         try:
                             ## include the image if it is there
                             if question[1]["image"]:
-                                tempfile.write("![](%s)" %(os.path.join(dir, "images/", str(question[1]["image"]),)), )
+                                try:
+                                    options = "{width=%s}" %(question[1]["img_width"],)
+                                except KeyError:
+                                    options = ""
+                                tempfile.write(
+                                    "![](%s)%s" % (os.path.join(dir, "images/", str(question[1]["image"])), options))
                         except KeyError:
                             pass
 
@@ -76,7 +82,11 @@ class Exam:
                             else:
                                 answers.append(str(answer).replace("**",""))
                         if shuffle_answers:
-                            random.shuffle(answers)
+                            try:
+                                check = question[1]["dont_shuffle_answers"]
+                            except KeyError: #only do this if the question lacks the dont_shuffle_answers option
+                                random.shuffle(answers)
+
                         for answer in enumerate(answers):
                             tempfile.write("    "  + string.ascii_uppercase[answer[0]] + ".  " + str(answer[1]) + "\n")
                         tempfile.write("\n\n")
@@ -102,6 +112,6 @@ class Exam:
 
         if makeGradingKey:
             writeExamOrKey(isKey=True, outfilename_possibly_with_KEY = outfilename.replace("\.docx", "") + "_KEY" + ".docx", dir=self.dir)
-            writeExamOrKey(isKey=False,outfilename_possibly_with_KEY = outfilename, dir=self.dir)
+            #writeExamOrKey(isKey=False,outfilename_possibly_with_KEY = outfilename, dir=self.dir)
         else:
             writeExamOrKey(isKey=False,outfilename_possibly_with_KEY = outfilename, dir=self.dir)

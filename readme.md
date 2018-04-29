@@ -41,5 +41,7 @@ If a file named `reference.docx` exists in `dir` then the styles in this documen
 
 ### Images
 
-There is rudimentary support for images. Just include a relative file path in the `image` block in your YAML file for the question you want to provide an image for.  This file is expected to be found in an `images/` subdirectory of `dir`, and will produce an error if not found. The image will be included before the associated question in the resulting document. 
+There is rudimentary support for images. Just include a relative file path in the `image` block in your YAML file for the question you want to provide an image for.  This file is expected to be found in an `images/` subdirectory of `dir`, and will produce an error if not found. The image will be included before the associated question in the resulting document.
+
+You can also include an `img_width` block in a question to indicate how wide to render an image.  You should put a decimel number followed by a unit with no space.  The units can be any one of `px`, `cm`, `mm`, `in`, `inch` or `%`.  Do not include spaces between the number and the units (e.g. 2inch)
 
