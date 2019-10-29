@@ -99,7 +99,7 @@ class Exam:
 
             fullRefPath = os.path.join(self.dir, "reference.docx")
             if os.path.isfile(fullRefPath):
-                args.append("--reference-docx")
+                args.append("--reference-doc")
                 args.append(fullRefPath)
 
             args.append(os.path.join(self.dir, "temp.md"))
