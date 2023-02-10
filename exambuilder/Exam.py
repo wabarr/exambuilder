@@ -87,7 +87,8 @@ class Exam:
                         #format your answers depending on whether we are dealing with a key or not
                         for answer in question[1]["answers"]:
                             if isKey and str(answer).find("**") > -1:
-                                answers.append("**" + str(answer).replace("**","") + "**")
+                                #depends on a character style called correct_answer, styled as you want it in reference.docx
+                                answers.append("<span custom-style='correct_answer'>" + str(answer).replace("**","") + "</span>")
                             else:
                                 answers.append(str(answer).replace("**",""))
                         if shuffle_answers:
@@ -114,6 +115,8 @@ class Exam:
             args.append(os.path.join(self.dir, "temp.md"))
             try:
                 subprocess.check_call(args)
+                #print(subprocess)
+                #print(args)
                 os.remove(os.path.join(self.dir, "temp.md"))
             except:
                 print(subprocess)
