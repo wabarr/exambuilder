@@ -12,7 +12,7 @@ class Exam:
         ## Each exam has its own folder called dir, all other paths are in reference to this dir
         ## examYAML is the YAML file containing the questions
         with open(os.path.join(dir, examYAML), "r") as testfile:
-            self.parsed_exam = yaml.load(testfile)
+            self.parsed_exam = yaml.load(testfile, yaml.Loader)
             testfile.close()
             self.dir = dir
 
@@ -37,11 +37,20 @@ class Exam:
         ## key indicates whether or not this is an instructors key or not
         ## version is a letter indicating the exam version
 
-
         questions = self.parsed_exam["questions"]
-
+        non_shufflable_questions = []
+        shufflable_questions = []
+        for q in questions:
+            try:
+                if q["do_not_shuffle_question"]:
+                    non_shufflable_questions.append(q)
+            except:
+                shufflable_questions.append(q)
+                
         if shuffle_questions == True:
-            random.shuffle(questions)
+            random.shuffle(shufflable_questions)
+        
+        questions = non_shufflable_questions + shufflable_questions
 
         def writeExamOrKey(isKey, outfilename_possibly_with_KEY, dir):
             #writes either an exam or a key depending on the argument
@@ -112,6 +121,6 @@ class Exam:
 
         if makeGradingKey:
             writeExamOrKey(isKey=True, outfilename_possibly_with_KEY = outfilename.replace("\.docx", "") + "_KEY" + ".docx", dir=self.dir)
-            #writeExamOrKey(isKey=False,outfilename_possibly_with_KEY = outfilename, dir=self.dir)
+            writeExamOrKey(isKey=False,outfilename_possibly_with_KEY = outfilename, dir=self.dir)
         else:
             writeExamOrKey(isKey=False,outfilename_possibly_with_KEY = outfilename, dir=self.dir)
