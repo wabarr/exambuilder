@@ -66,8 +66,8 @@ class Exam:
 
                     try:
                         if question[1]["fill_in"]:
-                            tempfile.write("\n\n" + str(question[0] + 1) + ". " + str(question[1]["question"]) + "\n\n<br><br>")
-                            tempfile.write("\_" * 45 + "\n\n")
+                            tempfile.write("\n\n" + str(question[0] + 1) + ". " + str(question[1]["question"]) )
+                            #tempfile.write("\_" * 45 + "\n\n")
                     except KeyError: #these are multiple choice questions
                         try:
                             ## include the image if it is there
