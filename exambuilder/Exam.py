@@ -52,6 +52,7 @@ class Exam:
         
         questions = non_shufflable_questions + shufflable_questions
 
+
         def writeExamOrKey(isKey, outfilename_possibly_with_KEY, dir):
             #writes either an exam or a key depending on the argument
             #this allows us to reuse the code to write exams and keys with the same shuffled order
@@ -66,8 +67,35 @@ class Exam:
 
                     try:
                         if question[1]["fill_in"]:
+                            ##these are fill in the blank questions
                             tempfile.write("\n\n" + str(question[0] + 1) + ". " + str(question[1]["question"]) )
                             #tempfile.write("\_" * 45 + "\n\n")
+                    except:
+                        pass
+                    
+                    try:
+                        if question[1]["matching"]:
+                            ## these are matching questions
+                            ## making use of pandocs piping table syntax https://pandoc.org/MANUAL.html#tables
+                            tempfile.write("\n\n" + str(question[0] + 1) + ". " + str(question[1]["question"]) + "\n\n")
+                            tempfile.write("|||\n--|--------|---|----------\n")
+                            items = []
+                            descriptions = []
+                            letters = []
+                            blanks_or_answers = []
+                            
+                            for answer in enumerate(question[1]["answers"]):
+                                items.append(answer[1]["item"])
+                                descriptions.append(answer[1]["description"])
+                                letters.append(string.ascii_uppercase[answer[0]])
+                                blanks_or_answers.append("<span custom-style='correct_answer'>__" + string.ascii_uppercase[answer[0]] + "__</span>")
+                            indices = [i for i in range(0, len(items))]
+                            shuffled_indices = [i for i in range(0, len(items))]
+                            random.shuffle(shuffled_indices)
+                            for i in indices:
+                                tempfile.write("%s. | %s | %s | %s\n" %(string.ascii_uppercase[i], items[i], blanks_or_answers[shuffled_indices[i]], descriptions[shuffled_indices[i]]))
+                            tempfile.write("\n")
+                            
                     except KeyError: #these are multiple choice questions
                         try:
                             ## include the image if it is there
