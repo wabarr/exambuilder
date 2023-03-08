@@ -117,13 +117,9 @@ class Exam:
                 subprocess.check_call(args)
                 #print(subprocess)
                 #print(args)
-                os.remove(os.path.join(self.dir, "temp.md"))
+                #os.remove(os.path.join(self.dir, "temp.md"))
             except:
                 print(subprocess)
                 print(args)
 
-        if makeGradingKey:
-            writeExamOrKey(isKey=True, outfilename_possibly_with_KEY = outfilename.replace("\.docx", "") + "_KEY" + ".docx", dir=self.dir)
-            writeExamOrKey(isKey=False,outfilename_possibly_with_KEY = outfilename, dir=self.dir)
-        else:
-            writeExamOrKey(isKey=False,outfilename_possibly_with_KEY = outfilename, dir=self.dir)
+        writeExamOrKey(isKey=True, outfilename_possibly_with_KEY = outfilename.replace("\.docx", "") + "_KEY" + ".docx", dir=self.dir)
