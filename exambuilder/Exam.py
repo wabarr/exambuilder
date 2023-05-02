@@ -38,19 +38,30 @@ class Exam:
         ## version is a letter indicating the exam version
 
         questions = self.parsed_exam["questions"]
-        non_shufflable_questions = []
+        beginning_questions = []
         shufflable_questions = []
+        ending_questions = []
         for q in questions:
             try:
                 if q["do_not_shuffle_question"]:
-                    non_shufflable_questions.append(q)
-            except:
-                shufflable_questions.append(q)
+                    #this is to maintain backwards compatibility for when this used to be the flag
+                    #should use 'beginning_question' going forward
+                    beginning_questions.append(q)
+            except KeyError:
+                try:
+                    if q["beginning_question"]:
+                        beginning_questions.append(q)
+                except KeyError:
+                    try:
+                        if q["ending_question"]:
+                            ending_questions.append(q)
+                    except KeyError:
+                        shufflable_questions.append(q)
                 
         if shuffle_questions == True:
             random.shuffle(shufflable_questions)
         
-        questions = non_shufflable_questions + shufflable_questions
+        questions = beginning_questions + shufflable_questions + ending_questions
 
 
         def writeExamOrKey(isKey, outfilename_possibly_with_KEY, dir):
@@ -64,70 +75,73 @@ class Exam:
                 tempfile.write("\n" + "******" + "\n")
 
                 for question in enumerate(questions):
-
+                    try:
+                        ## include the image if it is there
+                        if question[1]["image"]:
+                            try:
+                                options = "{width=%s}" %(question[1]["img_width"],)
+                            except KeyError:
+                                options = ""
+                            tempfile.write(
+                                "![](%s)%s" % (os.path.join(dir, "images/", str(question[1]["image"])), options))
+                    except KeyError:
+                        pass
+                    
                     try:
                         if question[1]["fill_in"]:
                             ##these are fill in the blank questions
                             tempfile.write("\n\n" + str(question[0] + 1) + ". " + str(question[1]["question"]) )
                             #tempfile.write("\_" * 45 + "\n\n")
                     except:
-                        pass
-                    
-                    try:
-                        if question[1]["matching"]:
-                            ## these are matching questions
-                            ## making use of pandocs piping table syntax https://pandoc.org/MANUAL.html#tables
-                            tempfile.write("\n\n" + str(question[0] + 1) + ". " + str(question[1]["question"]) + "\n\n")
-                            tempfile.write("|||\n--|--------|---|----------\n")
-                            items = []
-                            descriptions = []
-                            letters = []
-                            blanks_or_answers = []
-                            
-                            for answer in enumerate(question[1]["answers"]):
-                                items.append(answer[1]["item"])
-                                descriptions.append(answer[1]["description"])
-                                letters.append(string.ascii_uppercase[answer[0]])
-                                blanks_or_answers.append("<span custom-style='correct_answer'>__" + string.ascii_uppercase[answer[0]] + "__</span>")
-                            indices = [i for i in range(0, len(items))]
-                            shuffled_indices = [i for i in range(0, len(items))]
-                            random.shuffle(shuffled_indices)
-                            for i in indices:
-                                tempfile.write("%s. | %s | %s | %s\n" %(string.ascii_uppercase[i], items[i], blanks_or_answers[shuffled_indices[i]], descriptions[shuffled_indices[i]]))
-                            tempfile.write("\n")
-                            
-                    except KeyError: #these are multiple choice questions
                         try:
-                            ## include the image if it is there
-                            if question[1]["image"]:
-                                try:
-                                    options = "{width=%s}" %(question[1]["img_width"],)
-                                except KeyError:
-                                    options = ""
-                                tempfile.write(
-                                    "![](%s)%s" % (os.path.join(dir, "images/", str(question[1]["image"])), options))
-                        except KeyError:
-                            pass
+                            if question[1]["matching"]:
+                                ## these are matching questions
+                                ## making use of pandocs piping table syntax https://pandoc.org/MANUAL.html#tables
+                                tempfile.write("\n\n" + str(question[0] + 1) + ". " + str(question[1]["question"]) + "\n\n")
+                                tempfile.write("|||\n--|--------|---|----------\n")
+                                items = []
+                                descriptions = []
+                                letters = []
+                                blanks_or_answers = []
+                            
+                                for answer in enumerate(question[1]["answers"]):
+                                    items.append(answer[1]["item"])
+                                    descriptions.append(answer[1]["description"])
+                                    letters.append(string.ascii_uppercase[answer[0]])
+                                    blanks_or_answers.append("<span custom-style='correct_answer'>__" + string.ascii_uppercase[answer[0]] + "__</span>")
+                                indices = [i for i in range(0, len(items))]
+                                shuffled_indices = [i for i in range(0, len(items))]
+                                random.shuffle(shuffled_indices)
+                                for i in indices:
+                                    tempfile.write("%s. | %s | %s | %s\n" %(string.ascii_uppercase[i], items[i], blanks_or_answers[shuffled_indices[i]], descriptions[shuffled_indices[i]]))
+                                tempfile.write("\n")
+                            
+                        except KeyError: #these are multiple choice questions
 
-                        tempfile.write("\n\n" + str(question[0] + 1) + ". " + str(question[1]["question"]) + "\n\n")
-                        answers = []
+                            tempfile.write("\n\n" + str(question[0] + 1) + ". " + str(question[1]["question"]) + "\n\n")
+                            answers = []
 
-                        #format your answers depending on whether we are dealing with a key or not
-                        for answer in question[1]["answers"]:
-                            if isKey and str(answer).find("**") > -1:
-                                #depends on a character style called correct_answer, styled as you want it in reference.docx
-                                answers.append("<span custom-style='correct_answer'>" + str(answer).replace("**","") + "</span>")
-                            else:
-                                answers.append(str(answer).replace("**",""))
-                        if shuffle_answers:
                             try:
-                                check = question[1]["dont_shuffle_answers"]
-                            except KeyError: #only do this if the question lacks the dont_shuffle_answers option
-                                random.shuffle(answers)
-
-                        for answer in enumerate(answers):
-                            tempfile.write("    "  + string.ascii_uppercase[answer[0]] + ".  " + str(answer[1]) + "\n")
-                        tempfile.write("\n\n")
+                                #format your answers depending on whether we are dealing with a key or not
+                                for answer in question[1]["answers"]:
+                                    if isKey and str(answer).find("**") > -1:
+                                        #depends on a character style called correct_answer, styled as you want it in reference.docx
+                                        answers.append("<span custom-style='correct_answer'>" + str(answer).replace("**","") + "</span>")
+                                    else:
+                                        answers.append(str(answer).replace("**",""))
+                                if shuffle_answers:
+                                    try:
+                                        check = question[1]["dont_shuffle_answers"]
+                                    except KeyError: #only do this if the question lacks the dont_shuffle_answers option
+                                        random.shuffle(answers)
+                                
+                                for answer in enumerate(answers):
+                                    tempfile.write("    "  + string.ascii_uppercase[answer[0]] + ".  " + str(answer[1]) + "\n")
+                                tempfile.write("\n\n")
+                            except:
+                                print("Exception on: " + question[1]["question"])
+                    
+                    
 
 
             args=["pandoc",
